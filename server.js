@@ -6,6 +6,15 @@ http.createServer((req, res) => {
 	let q = url.parse(req.url, true);
 	let filePath = '';
 
+	let logMsg = `URL: ${req.url} \nTimestamp: ${new Date()} \n\n`;
+
+	fs.appendFile('log.txt', logMsg, (err) => {
+		if (err) {
+			console.log(err);
+		}
+		console.log('Added to log.');
+	});
+
 	if (q.pathname.includes('documentation')) {
 		filePath = __dirname + '/documentation.html';
 	} else {
