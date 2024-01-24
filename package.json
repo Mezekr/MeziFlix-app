@@ -1,0 +1,19 @@
+{
+  "name": "movie-api",
+  "version": "1.0.0",
+  "description": "A web application that allows users to access information about different films, directors and genres. Users will be able to register, update their personal information and create a list of their favourite films.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mezekr/MeziFlix-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mezekr/MeziFlix-app/issues"
+  },
+  "homepage": "https://github.com/Mezekr/MeziFlix-app#readme"
+}
