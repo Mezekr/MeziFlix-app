@@ -4,7 +4,8 @@
 	"description": "A web application that allows users to access information about different films, directors and genres. Users will be able to register, update their personal information and create a list of their favourite films.",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node index.js"
 	},
 	"repository": {
 		"type": "git",
