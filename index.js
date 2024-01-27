@@ -1,7 +1,9 @@
 const express = require('express');
-const app = express();
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 
-console.log('this is test');
+const app = express();
 
 const topMovies = [
 	{
@@ -40,6 +42,15 @@ const topMovies = [
 		writer: 'Steven Zaillian (screenplay), Charles Brandt (book)',
 	},
 ];
+
+const logWriter = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
+	flags: 'a',
+});
+
+// app.use(morgan('common'));
+app.use(morgan('combined', { stream: logWriter }));
+
+app.use(express.static('public'));
 
 app.get('/', (req, res) => res.send('Welcome to MeziFlix movies app'));
 
