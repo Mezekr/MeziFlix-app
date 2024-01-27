@@ -47,8 +47,11 @@ const logWriter = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
 	flags: 'a',
 });
 
-// app.use(morgan('common'));
+// log to logger text file
 app.use(morgan('combined', { stream: logWriter }));
+
+// log to terminal
+app.use(morgan('common'));
 
 app.use(express.static('public'));
 
