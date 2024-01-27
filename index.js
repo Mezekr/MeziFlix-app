@@ -47,13 +47,22 @@ const logWriter = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
 	flags: 'a',
 });
 
-// app.use(morgan('common'));
+// log to logger text file
 app.use(morgan('combined', { stream: logWriter }));
+
+// log to terminal
+app.use(morgan('common'));
 
 app.use(express.static('public'));
 
 app.get('/', (req, res) => res.send('Welcome to MeziFlix movies app'));
 
 app.get('/movies', (req, res) => res.json(topMovies));
+
+// error handling
+app.use((err, req, res, next) => {
+	console.error(err.stack);
+	res.status(500).send('Something has gone wrong!');
+});
 
 app.listen(8080, () => console.log('Your app is listening on port 8080.'));
