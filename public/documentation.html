@@ -39,7 +39,7 @@
                 </tr>
                 <tr>
                     <td>Get data about a single Movie by name or title</td>
-                    <td>/movies/[Title(Name)]</td>
+                    <td>/movies/[title]</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON object that holds data about a single film,
@@ -50,16 +50,16 @@
                 <tr>
                     <td>Get the genre (description) of a movie by its name or
                         title</td>
-                    <td>/movies/[Title(Name)]/genre</td>
+                    <td>/movies/genres/[genrename]</td>
                     <td>GET</td>
                     <td>None</td>
-                    <td>A text about the genre (description) of the movie</td>
+                    <td>A text about the genre's description of the movie</td>
                 </tr>
                 <tr>
                     <td>Get data about a director (biography, year of birth,
                         year of death) by the name of a movie
                     </td>
-                    <td>/movies/[Title(Name)]/director</td>
+                    <td>/movies/directors/[directorname]</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON object containing data about the movie's
@@ -83,7 +83,7 @@
                 </tr>
                 <tr>
                     <td>User update his/her user data </td>
-                    <td>/users/[username]/[newUsername]</td>
+                    <td>/users/[ID]/[newUsername]</td>
                     <td>PUT</td>
                     <td> None</td>
                     <td>A text message indicating the username was updated.
@@ -91,7 +91,7 @@
                 </tr>
                 <tr>
                     <td>User add a movie to his/her list of favourites.</td>
-                    <td>/users/[username]/[favourites]/[Title]</td>
+                    <td>/users/[ID]/[favourites]/[title]</td>
                     <td>PUT</td>
                     <td> None</td>
                     <td>Text message notifying user that movie has been added to
@@ -101,7 +101,7 @@
                 <tr>
                     <td>User removes a movie from his/her list of favourites.
                     </td>
-                    <td>/users/[username]/[favourites]/[Title]</td>
+                    <td>/users/[ID]/[favourites]/[Title]</td>
                     <td>DELETE</td>
                     <td> None</td>
                     <td>Text message notifying user that movie has been removed
@@ -110,7 +110,7 @@
                 </tr>
                 <tr>
                     <td> User Unregister </td>
-                    <td>/users/[username]/[newUsername]</td>
+                    <td>/users/[ID]/[newUsername]</td>
                     <td>DELETE</td>
                     <td> None</td>
                     <td>Text message notification that a user email has been
