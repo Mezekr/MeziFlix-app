@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Documentation</title>
 </head>
 
@@ -18,9 +19,109 @@
     </header>
     <main>
         <h1>Movie-API endpoints</h1>
-        <table>
-            <thead></thead>
-            <tbody></tbody>
+        <table style="width: 80%;">
+            <thead>
+                <tr>
+                    <th>Request</th>
+                    <th>URL</th>
+                    <th>HTTP Method</th>
+                    <th>Request body data format</th>
+                    <th>Response body data format </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Get a list of movies</td>
+                    <td>/movies</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON object holding data about all the movies </td>
+                </tr>
+                <tr>
+                    <td>Get data about a single Movie by name or title</td>
+                    <td>/movies/[Title(Name)]</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON object that holds data about a single film,
+                        including an ID, a name or title, a description, a
+                        genre, a director, and an image URL property.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Get the genre (description) of a movie by its name or
+                        title</td>
+                    <td>/movies/[Title(Name)]/genre</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A text about the genre (description) of the movie</td>
+                </tr>
+                <tr>
+                    <td>Get data about a director (biography, year of birth,
+                        year of death) by the name of a movie
+                    </td>
+                    <td>/movies/[Title(Name)]/director</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON object containing data about the movie's
+                        director, including biography, birthyear, and deathyear
+                        properties.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Add/register a new user</td>
+                    <td>/users</td>
+                    <td>POST</td>
+                    <td>A JSON object containing data about the new user being
+                        registered, structured like <br>
+                        <code>{ username :"username",
+                            userEmail:"username@email.com"
+                            password : "123456" }</code>
+                    </td>
+                    <td>A text message indicating that the new user is
+                        registered or added.
+                    </td>
+                </tr>
+                <tr>
+                    <td>User update his/her user data </td>
+                    <td>/users/[username]/[newUsername]</td>
+                    <td>PUT</td>
+                    <td> None</td>
+                    <td>A text message indicating the username was updated.
+                    </td>
+                </tr>
+                <tr>
+                    <td>User add a movie to his/her list of favourites.</td>
+                    <td>/users/[username]/[favourites]/[Title]</td>
+                    <td>PUT</td>
+                    <td> None</td>
+                    <td>Text message notifying user that movie has been added to
+                        user's favourites.
+                    </td>
+                </tr>
+                <tr>
+                    <td>User removes a movie from his/her list of favourites.
+                    </td>
+                    <td>/users/[username]/[favourites]/[Title]</td>
+                    <td>DELETE</td>
+                    <td> None</td>
+                    <td>Text message notifying user that movie has been removed
+                        from user's favourites.
+                    </td>
+                </tr>
+                <tr>
+                    <td> User Unregister </td>
+                    <td>/users/[username]/[newUsername]</td>
+                    <td>DELETE</td>
+                    <td> None</td>
+                    <td>Text message notification that a user email has been
+                        removed.
+                    </td>
+                </tr>
+
+
+
+
+            </tbody>
             <tbody></tbody>
         </table>
     </main>
