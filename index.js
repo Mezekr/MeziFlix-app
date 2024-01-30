@@ -233,6 +233,16 @@ app.get('/users/:id', (req, res) => {
 	} else res.status(404).send(`Sorry! User with ID ${id} not found`);
 });
 
+// Register a new user
+app.post('/users', (req, res) => {
+	const newUser = req.body;
+	if (newUser) {
+		newUser.id = uuid.v4();
+		users.push(newUser);
+		res.status(201).json(newUser);
+	} else res.status(400).send('Sorry! New user registration failed');
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
