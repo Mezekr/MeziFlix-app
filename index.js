@@ -253,6 +253,18 @@ app.put('/users/:id/:newUserName', (req, res) => {
 		res.status(404).send(`Sorry! User with ID ${updatedUser.id} not found`);
 });
 
+// User add movie to favorites
+app.put('/users/favorites/:id/:title', (req, res) => {
+	// const { id, favMovie } = req.params;
+	const user = users.find((user) => user.id == req.params.id);
+	if (user) {
+		user.favouriteMovies.push(req.params.title);
+		res.status(200).json(user);
+		// res.status(200).send(`${favMovie} added to your Favourite Movies list`);
+	} else
+		res.status(404).send(`Sorry! Movie with title ${favMovie} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
