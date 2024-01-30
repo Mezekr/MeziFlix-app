@@ -224,6 +224,15 @@ app.get('/movies/directors/:directorName', (req, res) => {
 // Return all  users
 app.get('/users', (req, res) => res.json(users));
 
+// Return user by ID
+app.get('/users/:id', (req, res) => {
+	const user = users.find((user) => user.id == req.params.id);
+	if (user) {
+		// updatedUser.username = req.params.newUserName;
+		res.status(200).json(user);
+	} else res.status(404).send(`Sorry! User with ID ${id} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
