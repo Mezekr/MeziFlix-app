@@ -243,6 +243,16 @@ app.post('/users', (req, res) => {
 	} else res.status(400).send('Sorry! New user registration failed');
 });
 
+// update User's data
+app.put('/users/:id/:newUserName', (req, res) => {
+	const updatedUser = users.find((user) => user.id == req.params.id);
+	if (updatedUser) {
+		updatedUser.username = req.params.newUserName;
+		res.status(200).json(updatedUser);
+	} else
+		res.status(404).send(`Sorry! User with ID ${updatedUser.id} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
