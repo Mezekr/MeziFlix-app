@@ -192,6 +192,13 @@ app.get('/', (req, res) => res.send('Welcome to MeziFlix movies app'));
 // Return all the movies
 app.get('/movies', (req, res) => res.json(movies));
 
+// Return a movie by title
+app.get('/movies/:title', (req, res) => {
+	const movie = movies.find((movie) => movie.Title === req.params.title);
+	if (movie) res.status(200).json(movie);
+	else res.status(404).send(`Sorry! Movie with title ${title} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
