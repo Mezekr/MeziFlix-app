@@ -199,6 +199,13 @@ app.get('/movies/:title', (req, res) => {
 	else res.status(404).send(`Sorry! Movie with title ${title} not found`);
 });
 
+// Return a genre of a movie by title
+app.get('/movies/genres/:title', (req, res) => {
+	const movie = movies.find((movie) => movie.Title === req.params.title);
+	if (movie) res.status(200).send(movie.Genre);
+	else res.status(404).send(`Sorry! Movie with title ${title} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
