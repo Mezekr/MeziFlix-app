@@ -73,9 +73,12 @@
                     <td>POST</td>
                     <td>A JSON object containing data about the new user being
                         registered, structured like <br>
-                        <code>{ username :"username",
-                            userEmail:"username@email.com"
-                            password : "123456" }</code>
+                        <code>{
+                            "username" :"username",
+                            "userEmail":"username@email.com",
+                            "favouritesMovies": []
+                            }
+                        </code>
                     </td>
                     <td>A text message indicating that the new user is
                         registered or added.
@@ -91,7 +94,7 @@
                 </tr>
                 <tr>
                     <td>User add a movie to his/her list of favourites.</td>
-                    <td>/users/[ID]/[favourites]/[title]</td>
+                    <td>/users/[favourites]/[ID]/[title]</td>
                     <td>PUT</td>
                     <td> None</td>
                     <td>Text message notifying user that movie has been added to
@@ -101,7 +104,7 @@
                 <tr>
                     <td>User removes a movie from his/her list of favourites.
                     </td>
-                    <td>/users/[ID]/[favourites]/[Title]</td>
+                    <td>/users/[favourites]/[ID]/[Title]</td>
                     <td>DELETE</td>
                     <td> None</td>
                     <td>Text message notifying user that movie has been removed
@@ -110,17 +113,13 @@
                 </tr>
                 <tr>
                     <td> User Unregister </td>
-                    <td>/users/[ID]/[newUsername]</td>
+                    <td>/users/[ID]</td>
                     <td>DELETE</td>
                     <td> None</td>
                     <td>Text message notification that a user email has been
                         removed.
                     </td>
                 </tr>
-
-
-
-
             </tbody>
             <tbody></tbody>
         </table>
