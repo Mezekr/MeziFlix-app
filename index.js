@@ -265,6 +265,23 @@ app.put('/users/favorites/:id/:title', (req, res) => {
 		res.status(404).send(`Sorry! Movie with title ${favMovie} not found`);
 });
 
+// User remove movie from favourites
+app.delete('/users/favorites/:id/:favTitle', (req, res) => {
+	const { id, favTitle } = req.params;
+	const user = users.find((user) => user.id == id);
+	if (user && favTitle) {
+		// user.favouriteMovies.push(favMovie);
+		user.favouriteMovies = user.favouriteMovies.filter(
+			(favTitle) => favTitle !== title
+		);
+		// user.favouriteMovies = favouriteMovies;
+		res.status(200).send(
+			`${favTitle} removed from your Favourite Movies list`
+		);
+	} else
+		res.status(404).send(`Sorry! Movie with title ${favTitle} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
