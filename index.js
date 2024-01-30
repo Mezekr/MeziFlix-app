@@ -153,6 +153,24 @@ const movies = [
 	},
 ];
 
+const users = [
+	{
+		id: 1,
+		username: 'Mezi',
+		favouriteMovies: {},
+	},
+	{
+		id: 2,
+		username: 'Daniel',
+		favouriteMovies: {},
+	},
+	{
+		id: 3,
+		username: 'Marry',
+		favouriteMovies: {},
+	},
+];
+
 const logWriter = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
 	flags: 'a',
 });
