@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
+const uuid = require('uuid');
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -157,17 +159,17 @@ const users = [
 	{
 		id: 1,
 		username: 'Mezi',
-		favouriteMovies: {},
+		favouriteMovies: [],
 	},
 	{
 		id: 2,
 		username: 'Daniel',
-		favouriteMovies: {},
+		favouriteMovies: [],
 	},
 	{
 		id: 3,
 		username: 'Marry',
-		favouriteMovies: {},
+		favouriteMovies: [],
 	},
 ];
 
@@ -183,8 +185,11 @@ app.use(morgan('common'));
 
 app.use(express.static('public'));
 
+app.use(bodyParser.json());
+
 app.get('/', (req, res) => res.send('Welcome to MeziFlix movies app'));
 
+// Return all the movies
 app.get('/movies', (req, res) => res.json(movies));
 
 // error handling
