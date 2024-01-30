@@ -282,6 +282,17 @@ app.delete('/users/favorites/:id/:favTitle', (req, res) => {
 		res.status(404).send(`Sorry! Movie with title ${favTitle} not found`);
 });
 
+// Remove a user
+app.delete('/users/:id', (req, res) => {
+	const userToDelID = req.params.id;
+	const user = users.find((user) => user.id == userToDelID);
+	if (user) {
+		users.filter((user) => user.id != userToDelID);
+		// res.status(200).json(users.filter((user) => user.id != userToDelID));
+		res.status(200).send(`User with ID ${userToDelID} removed from Users`);
+	} else res.status(404).send(`Sorry! User with ID ${userToDelID} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
