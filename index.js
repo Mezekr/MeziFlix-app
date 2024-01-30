@@ -221,6 +221,9 @@ app.get('/movies/directors/:directorName', (req, res) => {
 		res.status(404).send(`Sorry! Director with name ${director} not found`);
 });
 
+// Return all  users
+app.get('/users', (req, res) => res.json(users));
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
