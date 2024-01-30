@@ -206,6 +206,21 @@ app.get('/movies/genres/:title', (req, res) => {
 	else res.status(404).send(`Sorry! Movie with title ${title} not found`);
 });
 
+// Return a Director of a movie
+app.get('/movies/directors/:directorName', (req, res) => {
+	const director = movies.find(
+		(movie) => movie.Director === req.params.directorName
+	).Director;
+	if (director)
+		res.status(200).json({
+			name: director,
+			year: 'placeholder',
+			bio: 'placeholder',
+		});
+	else
+		res.status(404).send(`Sorry! Director with name ${director} not found`);
+});
+
 // error handling
 app.use((err, req, res, next) => {
 	console.error(err.stack);
