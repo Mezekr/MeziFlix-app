@@ -379,6 +379,32 @@
                 </code>
 
             </div>
+            <div>
+                <h3>Add movie to favourites</h3>
+                <p>Users add a movie to their favourite movies </p>
+                <p><strong>URL</strong>: /users/favorite</p>
+                <p><strong>Method</strong>: PUT</p>
+                <p><strong>Header</strong>: None </p>
+                <p><strong>Parameters</strong>: id (user id, Required), title
+                    (movie title to be added, Required)
+                </p>
+                <p><strong>Body</strong>: None </p>
+                <p><strong>Return type</strong>: JSON </p>
+                <p><strong>Success Response</strong></p>
+                <p>code: <code> 200 OK</code></p>
+                <p>Body Response</p>
+                <code>
+                <pre>
+                    {
+                        "id": 2,
+                        "username": "Daniel",
+                        "favouriteMovies": [
+                            "Avatar"
+                        ]
+                    }
+                </pre>
+                </code>
+            </div>
         </div>
     </main>
     <footer></footer>
