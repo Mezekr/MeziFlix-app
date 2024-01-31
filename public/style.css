@@ -30,6 +30,7 @@ table {
 }
 code {
 	color: blue;
+	background-color: rgb(161, 168, 175);
 }
 .apis-container {
 	padding: 10px 20px;
