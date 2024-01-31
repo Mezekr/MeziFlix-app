@@ -298,6 +298,39 @@
                 <code> Action, Adventure, Fantasy </code>
                 </pre>
             </div>
+            <div>
+                <h3>Create New User</h3>
+                <p>Creates a new user </p>
+                <p><strong>URL</strong>: /users</p>
+                <p><strong>Method</strong>: POST</p>
+                <p><strong>Header</strong>: None </p>
+                <p><strong>Parameters</strong>: None </p>
+                <p><strong>Body</strong>
+                    <code>
+                        <pre>
+                        {
+                            "username": "New User",
+                            "favouriteMovies" :[]
+                        }
+                        </pre>
+                    </code>
+                </p>
+                <p><strong>Return type</strong>: JSON </p>
+                <p><strong>Success Response</strong></p>
+                <p>code: <code> 200 OK</code></p>
+                <p>Body Response</p>
+
+                <code>
+                    <pre>
+                        {
+                            "username": "New User",
+                            "favouriteMovies": [],
+                            "id": "013165eb-03d3-41f1-9e4c-976aa4ea67b9"
+                        }
+                    </pre>
+                </code>
+
+            </div>
         </div>
     </main>
     <footer></footer>
