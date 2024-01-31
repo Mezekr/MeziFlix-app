@@ -29,8 +29,9 @@ table {
 	padding: auto;
 }
 code {
-	color: blue;
-	background-color: rgb(161, 168, 175);
+	display: inline-block;
+	color: rgb(222, 210, 50);
+	background-color: rgb(68, 70, 72);
 }
 .apis-container {
 	padding: 10px 20px;
