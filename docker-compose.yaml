@@ -29,4 +29,4 @@ services:
             MONGO_INITDB_ROOT_USERNAME: root
             MONGO_INITDB_ROOT_PASSWORD: root
         volumes:
-            - moviesdb:/data/db
+            - ../moviesdb:/data/db
