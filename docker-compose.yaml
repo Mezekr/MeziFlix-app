@@ -4,5 +4,20 @@ services:
     frontend:
 
     backend:
+        build:
+            context: .
+        ports:
+            - 8080:8080
+        environment:
+            DB_URL: mongodb://data/moviesdb
+        develop:
+            watch:
+                - path: package.json
+                  action: rebuild
+                - path: package-lock.json
+                  action: rebuild
+                - path: .
+                  target: /app
+                  action: sync
 
     mongodb:
