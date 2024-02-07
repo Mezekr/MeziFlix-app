@@ -254,11 +254,10 @@ app.put('/users/:id', (req, res) => {
 });
 
 // User add movie to favorites
-app.put('/users/favorites/:id/:title', (req, res) => {
-	// const { id, favMovie } = req.params;
+app.put('/users/favorites/:id', (req, res) => {
 	const user = users.find((user) => user.id == req.params.id);
 	if (user) {
-		user.favouriteMovies.push(req.params.title);
+		user.favouriteMovies.push(req.body.title);
 		res.status(200).json(user);
 		// res.status(200).send(`${favMovie} added to your Favourite Movies list`);
 	} else
