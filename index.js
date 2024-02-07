@@ -244,10 +244,10 @@ app.post('/users', (req, res) => {
 });
 
 // update User's data
-app.put('/users/:id/:newUserName', (req, res) => {
+app.put('/users/:id', (req, res) => {
 	const updatedUser = users.find((user) => user.id == req.params.id);
 	if (updatedUser) {
-		updatedUser.username = req.params.newUserName;
+		updatedUser.username = req.body.name;
 		res.status(200).json(updatedUser);
 	} else
 		res.status(404).send(`Sorry! User with ID ${updatedUser.id} not found`);
