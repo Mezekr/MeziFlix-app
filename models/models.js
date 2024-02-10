@@ -21,3 +21,22 @@ const movieSchema = mongoose.Schema({
 	ImagePath: String,
 	Featured: Boolean,
 });
+
+// Users Mongoose Models Schema
+
+const userSchema = mongoose.Schema({
+	Username: { type: String, required: [true, 'Please enter a username.'] },
+	Password: {
+		type: String,
+		required: [
+			true,
+			'The password must not be empty. Please enter a password.',
+		],
+	},
+	Email: {
+		type: String,
+		required: [true, 'Please fill in an email address.'],
+	},
+	Birthday: Date,
+	FavouriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
+});
