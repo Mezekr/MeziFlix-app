@@ -55,3 +55,9 @@ const userSchema = mongoose.Schema(
 		timestamps: true,
 	}
 );
+
+const Movie = mongoose.model('Movie', movieSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports.Movie = Movie;
+module.exports.User = User;
