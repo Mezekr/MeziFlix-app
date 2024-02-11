@@ -240,6 +240,31 @@ app.get('/users/:id', (req, res) => {
 	} else res.status(404).send(`Sorry! User with ID ${id} not found`);
 });
 
+// Register a new user
+app.post('/users', async (req, res) => {
+	await Users.findOne({ Username: req.body.Username })
+		.then((user) => {
+			if (user) {
+				return res
+					.status(400)
+					.send(`Username ${req.body.Username} already exist`);
+			} else {
+				Users.create(req.body)
+					.then((user) => {
+						res.status(201).json(user);
+					})
+					.catch((error) => {
+						console.error(error);
+						res.status(500).send('Error' + error);
+					});
+			}
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send('Error' + error);
+		});
+});
+
 // update User's data
 app.put('/users/:id', (req, res) => {
 	const updatedUser = users.find((user) => user.id == req.params.id);
