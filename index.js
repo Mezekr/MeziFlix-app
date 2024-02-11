@@ -366,6 +366,37 @@ app.put('/users/:Username/movies/:MovieID', async (req, res) => {
 		});
 });
 
+// User delet movie from favorites
+app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
+	await Users.findOne({ Username: req.params.Username })
+		.then(async (user) => {
+			const favMovie = user.FavouriteMovies.find((movie) => {
+				return movie == req.params.MovieID;
+			});
+			if (!favMovie) {
+				res.status(400).send(`${favMovie} not found`);
+			} else {
+				await Users.findOneAndUpdate(
+					{ Username: req.params.Username },
+					{
+						$pull: { FavouriteMovies: req.params.MovieID },
+					},
+					{ new: true }
+				)
+					.then((updatedUser) => {
+						res.status(200).json(updatedUser);
+					})
+					.catch((error) => {
+						console.error(err);
+						res.status(500).send('Error: ' + error);
+					});
+			}
+		})
+		.catch((error) => {
+			console.error(err);
+			res.status(500).send('Error: ' + error);
+		});
+});
 // User remove movie from favourites
 app.delete('/users/favorites/:id/:favTitle', (req, res) => {
 	const { id, favTitle } = req.params;
