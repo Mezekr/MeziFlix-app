@@ -221,10 +221,15 @@ app.get('/movies/:title', async (req, res) => {
 });
 
 // Return a genre of a movie by title
-app.get('/movies/genres/:title', (req, res) => {
-	const movie = movies.find((movie) => movie.Title === req.params.title);
-	if (movie) res.status(200).send(movie.Genre);
-	else res.status(404).send(`Sorry! Movie with title ${title} not found`);
+app.get('/movies/genres/:title', async (req, res) => {
+	await Movies.findOne({ Title: req.params.title })
+		.then((movie) => {
+			res.status(201).json(movie.Genre);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
+		});
 });
 
 // Return a Director of a movie
