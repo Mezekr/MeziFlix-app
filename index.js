@@ -288,14 +288,37 @@ app.post('/users', async (req, res) => {
 		});
 });
 
+// // update User's data
+// app.put('/users/:id', (req, res) => {
+// 	const updatedUser = users.find((user) => user.id == req.params.id);
+// 	if (updatedUser) {
+// 		updatedUser.username = req.body.name;
+// 		res.status(200).json(updatedUser);
+// 	} else
+// 		res.status(404).send(`Sorry! User with ID ${updatedUser.id} not found`);
+// });
+
 // update User's data
-app.put('/users/:id', (req, res) => {
-	const updatedUser = users.find((user) => user.id == req.params.id);
-	if (updatedUser) {
-		updatedUser.username = req.body.name;
-		res.status(200).json(updatedUser);
-	} else
-		res.status(404).send(`Sorry! User with ID ${updatedUser.id} not found`);
+app.put('/users/:Username', async (req, res) => {
+	await Users.findOneAndUpdate(
+		{ Username: req.params.Username },
+		{
+			$set: {
+				Username: req.body.Username,
+				Password: req.body.Password,
+				Email: req.body.Email,
+				Birthday: req.body.Birthday,
+			},
+		},
+		{ new: true }
+	)
+		.then((updatedUser) => {
+			res.status(201).json(updatedUser);
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send('Error' + error);
+		});
 });
 
 // User add movie to favorites
