@@ -3,9 +3,16 @@ const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
 const uuid = require('uuid');
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Models = require('./models/models.js');
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Mongoose models
+const Movies = Models.Movie;
+const Users = Models.User;
 
 const movies = [
 	{
@@ -185,9 +192,9 @@ app.use(morgan('common'));
 
 app.use(express.static('public'));
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-app.get('/', (req, res) => res.send('Welcome to MeziFlix movies app'));
+app.get('/', (req, res) => res.send('Welcome to MeziFlix Movies app.'));
 
 // Return all the movies
 app.get('/movies', (req, res) => res.json(movies));
