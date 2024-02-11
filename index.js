@@ -228,18 +228,15 @@ app.get('/movies/genres/:title', (req, res) => {
 });
 
 // Return a Director of a movie
-app.get('/movies/directors/:directorName', (req, res) => {
-	const director = movies.find(
-		(movie) => movie.Director === req.params.directorName
-	).Director;
-	if (director)
-		res.status(200).json({
-			name: director,
-			year: 'placeholder',
-			bio: 'placeholder',
+app.get('/movies/directors/:directorName', async (req, res) => {
+	await Movies.findOne({ 'Director.Name': req.params.directorName })
+		.then((movie) => {
+			res.status(201).json(movie.Director);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
 		});
-	else
-		res.status(404).send(`Sorry! Director with name ${director} not found`);
 });
 
 // Return all  users
