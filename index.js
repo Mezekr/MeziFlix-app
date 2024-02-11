@@ -197,7 +197,16 @@ app.use(express.static('public'));
 app.get('/', (req, res) => res.send('Welcome to MeziFlix Movies app.'));
 
 // Return all the movies
-app.get('/movies', (req, res) => res.json(movies));
+app.get('/movies', async (req, res) => {
+	await Movies.find({})
+		.then((movies) => {
+			res.status(201).json(movies);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
+		});
+});
 
 // Return a movie by title
 app.get('/movies/:title', (req, res) => {
