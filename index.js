@@ -2,176 +2,16 @@ const express = require('express');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
-const uuid = require('uuid');
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Models = require('./models/models.js');
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const movies = [
-	{
-		Title: 'Avatar',
-		Year: '2009',
-		Rated: 'PG-13',
-		Released: '18 Dec 2009',
-		Runtime: '162 min',
-		Genre: 'Action, Adventure, Fantasy',
-		Director: 'James Cameron',
-		Writer: 'James Cameron',
-		Actors: 'Sam Worthington, Zoe Saldana, Sigourney Weaver, Stephen Lang',
-		Plot: 'A paraplegic marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.',
-		Language: 'English, Spanish',
-		Country: 'USA, UK',
-		Awards: 'Won 3 Oscars. Another 80 wins & 121 nominations.',
-		Poster: 'http://ia.media-imdb.com/images/M/MV5BMTYwOTEwNjAzMl5BMl5BanBnXkFtZTcwODc5MTUwMw@@._V1_SX300.jpg',
-		Metascore: '83',
-		imdbRating: '7.9',
-		imdbVotes: '890,617',
-		imdbID: 'tt0499549',
-		Type: 'movie',
-		Response: 'True',
-		Images: [
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMjEyOTYyMzUxNl5BMl5BanBnXkFtZTcwNTg0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BNzM2MDk3MTcyMV5BMl5BanBnXkFtZTcwNjg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTY2ODQ3NjMyMl5BMl5BanBnXkFtZTcwODg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTMxOTEwNDcxN15BMl5BanBnXkFtZTcwOTg0MTUzNA@@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTYxMDg1Nzk1MV5BMl5BanBnXkFtZTcwMDk0MTUzNA@@._V1_SX1500_CR0,0,1500,999_AL_.jpg',
-		],
-	},
-	{
-		Title: 'The Wolf of Wall Street',
-		Year: '2013',
-		Rated: 'R',
-		Released: '25 Dec 2013',
-		Runtime: '180 min',
-		Genre: 'Biography, Comedy, Crime',
-		Director: 'Martin Scorsese',
-		Writer: 'Terence Winter (screenplay), Jordan Belfort (book)',
-		Actors: 'Leonardo DiCaprio, Jonah Hill, Margot Robbie, Matthew McConaughey',
-		Plot: 'Based on the true story of Jordan Belfort, from his rise to a wealthy stock-broker living the high life to his fall involving crime, corruption and the federal government.',
-		Language: 'English, French',
-		Country: 'USA',
-		Awards: 'Nominated for 5 Oscars. Another 35 wins & 154 nominations.',
-		Poster: 'http://ia.media-imdb.com/images/M/MV5BMjIxMjgxNTk0MF5BMl5BanBnXkFtZTgwNjIyOTg2MDE@._V1_SX300.jpg',
-		Metascore: '75',
-		imdbRating: '8.2',
-		imdbVotes: '786,985',
-		imdbID: 'tt0993846',
-		Type: 'movie',
-		Response: 'True',
-		Images: [
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BNDIwMDIxNzk3Ml5BMl5BanBnXkFtZTgwMTg0MzQ4MDE@._V1_SX1500_CR0,0,1500,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTc0NzAxODAyMl5BMl5BanBnXkFtZTgwMDg0MzQ4MDE@._V1_SX1500_CR0,0,1500,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTExMDk1MDE4NzVeQTJeQWpwZ15BbWU4MDM4NDM0ODAx._V1_SX1500_CR0,0,1500,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTg3MTY4NDk4Nl5BMl5BanBnXkFtZTgwNjc0MzQ4MDE@._V1_SX1500_CR0,0,1500,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTgzMTg4MDI0Ml5BMl5BanBnXkFtZTgwOTY0MzQ4MDE@._V1_SY1000_CR0,0,1553,1000_AL_.jpg',
-		],
-	},
-	{
-		Title: 'I Am Legend',
-		Year: '2007',
-		Rated: 'PG-13',
-		Released: '14 Dec 2007',
-		Runtime: '101 min',
-		Genre: 'Drama, Horror, Sci-Fi',
-		Director: 'Francis Lawrence',
-		Writer: 'Mark Protosevich (screenplay), Akiva Goldsman (screenplay), Richard Matheson (novel), John William Corrington, Joyce Hooper Corrington',
-		Actors: 'Will Smith, Alice Braga, Charlie Tahan, Salli Richardson-Whitfield',
-		Plot: 'Years after a plague kills most of humanity and transforms the rest into monsters, the sole survivor in New York City struggles valiantly to find a cure.',
-		Language: 'English',
-		Country: 'USA',
-		Awards: '9 wins & 21 nominations.',
-		Poster: 'http://ia.media-imdb.com/images/M/MV5BMTU4NzMyNDk1OV5BMl5BanBnXkFtZTcwOTEwMzU1MQ@@._V1_SX300.jpg',
-		Metascore: '65',
-		imdbRating: '7.2',
-		imdbVotes: '533,874',
-		imdbID: 'tt0480249',
-		Type: 'movie',
-		Response: 'True',
-		Images: [
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTI0NTI4NjE3NV5BMl5BanBnXkFtZTYwMDA0Nzc4._V1_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTIwMDg2MDU4M15BMl5BanBnXkFtZTYwMTA0Nzc4._V1_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTc5MDM1OTU5OV5BMl5BanBnXkFtZTYwMjA0Nzc4._V1_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTA0MTI2NjMzMzFeQTJeQWpwZ15BbWU2MDMwNDc3OA@@._V1_.jpg',
-		],
-	},
-	{
-		Title: 'The Avengers',
-		Year: '2012',
-		Rated: 'PG-13',
-		Released: '04 May 2012',
-		Runtime: '143 min',
-		Genre: 'Action, Sci-Fi, Thriller',
-		Director: 'Joss Whedon',
-		Writer: 'Joss Whedon (screenplay), Zak Penn (story), Joss Whedon (story)',
-		Actors: 'Robert Downey Jr., Chris Evans, Mark Ruffalo, Chris Hemsworth',
-		Plot: "Earth's mightiest heroes must come together and learn to fight as a team if they are to stop the mischievous Loki and his alien army from enslaving humanity.",
-		Language: 'English, Russian',
-		Country: 'USA',
-		Awards: 'Nominated for 1 Oscar. Another 34 wins & 75 nominations.',
-		Poster: 'http://ia.media-imdb.com/images/M/MV5BMTk2NTI1MTU4N15BMl5BanBnXkFtZTcwODg0OTY0Nw@@._V1_SX300.jpg',
-		Metascore: '69',
-		imdbRating: '8.1',
-		imdbVotes: '1,003,301',
-		imdbID: 'tt0848228',
-		Type: 'movie',
-		Response: 'True',
-		Images: [
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTA0NjY0NzE4OTReQTJeQWpwZ15BbWU3MDczODg2Nzc@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMjE1MzEzMjcyM15BMl5BanBnXkFtZTcwNDM4ODY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMjMwMzM2MTg1M15BMl5BanBnXkFtZTcwNjM4ODY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ4NzM2Mjc5MV5BMl5BanBnXkFtZTcwMTkwOTY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTc3MzQ3NjA5N15BMl5BanBnXkFtZTcwMzY5OTY3Nw@@._V1_SX1777_CR0,0,1777,999_AL_.jpg',
-		],
-	},
-	{
-		Title: 'Power',
-		Year: '2014',
-		Rated: 'TV-MA',
-		Released: 'N/A',
-		Runtime: '50 min',
-		Genre: 'Crime, Drama',
-		Director: 'N/A',
-		Writer: 'Courtney Kemp Agboh',
-		Actors: 'Omari Hardwick, Joseph Sikora, Andy Bean, Lela Loren',
-		Plot: 'James "Ghost" St. Patrick, a wealthy New York night club owner who has it all, catering for the city\'s elite and dreaming big, lives a double life as a drug kingpin.',
-		Language: 'English',
-		Country: 'USA',
-		Awards: '1 win & 6 nominations.',
-		Poster: 'http://ia.media-imdb.com/images/M/MV5BOTA4NTkzMjUzOF5BMl5BanBnXkFtZTgwNzg5ODkxOTE@._V1_SX300.jpg',
-		Metascore: 'N/A',
-		imdbRating: '8.0',
-		imdbVotes: '14,770',
-		imdbID: 'tt3281796',
-		Type: 'series',
-		totalSeasons: '3',
-		Response: 'True',
-		Images: [
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTc2ODg0MzMzM15BMl5BanBnXkFtZTgwODYxODA5NTE@._V1_SY1000_SX1500_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTcyMjA0MzczNV5BMl5BanBnXkFtZTgwNTIyODA5NTE@._V1_SY1000_SX1500_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTk0MTI0NzQ2NV5BMl5BanBnXkFtZTgwMDkxODA5NTE@._V1_SY1000_SX1500_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ4Mzk1ODcxM15BMl5BanBnXkFtZTgwNDQyODA5NTE@._V1_SY1000_SX1500_AL_.jpg',
-			'https://images-na.ssl-images-amazon.com/images/M/MV5BMTUwNTE0NDI1M15BMl5BanBnXkFtZTgwMDQyODA5NTE@._V1_SY1000_SX1500_AL_.jpg',
-		],
-	},
-];
-
-const users = [
-	{
-		id: 1,
-		username: 'Mezi',
-		favouriteMovies: [],
-	},
-	{
-		id: 2,
-		username: 'Daniel',
-		favouriteMovies: [],
-	},
-	{
-		id: 3,
-		username: 'Marry',
-		favouriteMovies: [],
-	},
-];
+// Mongoose models
+const Movies = Models.Movie;
+const Users = Models.User;
 
 const logWriter = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
 	flags: 'a',
@@ -185,72 +25,126 @@ app.use(morgan('common'));
 
 app.use(express.static('public'));
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-app.get('/', (req, res) => res.send('Welcome to MeziFlix movies app'));
+app.get('/', (req, res) => res.send('Welcome to MeziFlix Movies app.'));
 
 // Return all the movies
-app.get('/movies', (req, res) => res.json(movies));
+app.get('/movies', async (req, res) => {
+	await Movies.find({})
+		.then((movies) => {
+			res.status(201).json(movies);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
+		});
+});
 
 // Return a movie by title
-app.get('/movies/:title', (req, res) => {
-	const movie = movies.find((movie) => movie.Title === req.params.title);
-	if (movie) res.status(200).json(movie);
-	else res.status(404).send(`Sorry! Movie with title ${title} not found`);
+app.get('/movies/:title', async (req, res) => {
+	await Movies.findOne({ Title: req.params.title })
+		.then((movie) => {
+			res.status(201).json(movie);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
+		});
 });
 
 // Return a genre of a movie by title
-app.get('/movies/genres/:title', (req, res) => {
-	const movie = movies.find((movie) => movie.Title === req.params.title);
-	if (movie) res.status(200).send(movie.Genre);
-	else res.status(404).send(`Sorry! Movie with title ${title} not found`);
+app.get('/movies/genres/:title', async (req, res) => {
+	await Movies.findOne({ Title: req.params.title })
+		.then((movie) => {
+			res.status(201).json(movie.Genre);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
+		});
 });
 
 // Return a Director of a movie
-app.get('/movies/directors/:directorName', (req, res) => {
-	const director = movies.find(
-		(movie) => movie.Director === req.params.directorName
-	).Director;
-	if (director)
-		res.status(200).json({
-			name: director,
-			year: 'placeholder',
-			bio: 'placeholder',
+app.get('/movies/directors/:directorName', async (req, res) => {
+	await Movies.findOne({ 'Director.Name': req.params.directorName })
+		.then((movie) => {
+			res.status(201).json(movie.Director);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
 		});
-	else
-		res.status(404).send(`Sorry! Director with name ${director} not found`);
 });
 
 // Return all  users
-app.get('/users', (req, res) => res.json(users));
-
-// Return user by ID
-app.get('/users/:id', (req, res) => {
-	const user = users.find((user) => user.id == req.params.id);
-	if (user) {
-		// updatedUser.username = req.params.newUserName;
-		res.status(200).json(user);
-	} else res.status(404).send(`Sorry! User with ID ${id} not found`);
+app.get('/users', async (req, res) => {
+	await Users.find({})
+		.then((users) => {
+			res.status(201).json(users);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
+		});
+});
+// Return user by Username
+app.get('/users/:Username', async (req, res) => {
+	await Users.findOne({ Username: req.params.Username })
+		.then((user) => {
+			res.status(200).json(user);
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send('Error' + error);
+		});
 });
 
 // Register a new user
-app.post('/users', (req, res) => {
-	const newUser = req.body;
-	if (newUser) {
-		newUser.id = uuid.v4();
-		users.push(newUser);
-		res.status(201).json(newUser);
-	} else res.status(400).send('Sorry! New user registration failed');
+app.post('/users', async (req, res) => {
+	await Users.findOne({ Username: req.body.Username })
+		.then((user) => {
+			if (user) {
+				return res
+					.status(400)
+					.send(`Username ${req.body.Username} already exist`);
+			} else {
+				Users.create(req.body)
+					.then((user) => {
+						res.status(201).json(user);
+					})
+					.catch((error) => {
+						console.error(error);
+						res.status(500).send('Error' + error);
+					});
+			}
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send('Error' + error);
+		});
 });
 
-// update User's data
-app.put('/users/:id', (req, res) => {
-	const updatedUser = users.find((user) => user.id == req.params.id);
-	if (updatedUser) {
-		updatedUser.username = req.body.name;
-		res.status(200).json(updatedUser);
-	} else
-		res.status(404).send(`Sorry! User with ID ${updatedUser.id} not found`);
+app.put('/users/:Username', async (req, res) => {
+	await Users.findOneAndUpdate(
+		{ Username: req.params.Username },
+		{
+			$set: {
+				Username: req.body.Username,
+				Password: req.body.Password,
+				Email: req.body.Email,
+				Birthday: req.body.Birthday,
+			},
+		},
+		{ new: true }
+	)
+		.then((updatedUser) => {
+			res.status(201).json(updatedUser);
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send('Error' + error);
+		});
 });
 
 // User add movie to favorites
@@ -259,9 +153,58 @@ app.put('/users/favorites/:id', (req, res) => {
 	if (user) {
 		user.favouriteMovies.push(req.body.title);
 		res.status(200).json(user);
-		// res.status(200).send(`${favMovie} added to your Favourite Movies list`);
 	} else
 		res.status(404).send(`Sorry! Movie with title ${favMovie} not found`);
+});
+
+// User add movie to favorites
+app.put('/users/:Username/movies/:MovieID', async (req, res) => {
+	await Users.findOneAndUpdate(
+		{ Username: req.params.Username },
+		{
+			$push: { FavouriteMovies: req.params.MovieID },
+		},
+		{ new: true }
+	)
+		.then((updatedUser) => {
+			res.status(200).json(updatedUser);
+		})
+		.catch((error) => {
+			console.error(err);
+			res.status(500).send('Error: ' + error);
+		});
+});
+
+// User delet movie from favorites
+app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
+	await Users.findOne({ Username: req.params.Username })
+		.then(async (user) => {
+			const favMovie = user.FavouriteMovies.find((movie) => {
+				return movie == req.params.MovieID;
+			});
+			if (!favMovie) {
+				res.status(400).send(`${favMovie} not found`);
+			} else {
+				await Users.findOneAndUpdate(
+					{ Username: req.params.Username },
+					{
+						$pull: { FavouriteMovies: req.params.MovieID },
+					},
+					{ new: true }
+				)
+					.then((updatedUser) => {
+						res.status(200).json(updatedUser);
+					})
+					.catch((error) => {
+						console.error(err);
+						res.status(500).send('Error: ' + error);
+					});
+			}
+		})
+		.catch((error) => {
+			console.error(err);
+			res.status(500).send('Error: ' + error);
+		});
 });
 
 // User remove movie from favourites
@@ -269,11 +212,9 @@ app.delete('/users/favorites/:id/:favTitle', (req, res) => {
 	const { id, favTitle } = req.params;
 	const user = users.find((user) => user.id == id);
 	if (user && favTitle) {
-		// user.favouriteMovies.push(favMovie);
 		user.favouriteMovies = user.favouriteMovies.filter(
 			(favTitle) => favTitle !== title
 		);
-		// user.favouriteMovies = favouriteMovies;
 		res.status(200).send(
 			`${favTitle} removed from your Favourite Movies list`
 		);
@@ -281,15 +222,19 @@ app.delete('/users/favorites/:id/:favTitle', (req, res) => {
 		res.status(404).send(`Sorry! Movie with title ${favTitle} not found`);
 });
 
-// Remove a user
-app.delete('/users/:id', (req, res) => {
-	const userToDelID = req.params.id;
-	const user = users.find((user) => user.id == userToDelID);
-	if (user) {
-		users.filter((user) => user.id != userToDelID);
-		// res.status(200).json(users.filter((user) => user.id != userToDelID));
-		res.status(200).send(`User with ID ${userToDelID} removed from Users`);
-	} else res.status(404).send(`Sorry! User with ID ${userToDelID} not found`);
+app.delete('/users/:Username', async (req, res) => {
+	await Users.findOneAndDelete({ Username: req.params.Username })
+		.then((user) => {
+			if (!user) {
+				return res
+					.status(400)
+					.send(`Username ${req.body.Username} not found`);
+			} else res.status(201).json(user);
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send('Error' + error);
+		});
 });
 
 // error handling
@@ -298,4 +243,14 @@ app.use((err, req, res, next) => {
 	res.status(500).send('Something has gone wrong!');
 });
 
-app.listen(8080, () => console.log('Your app is listening on port 8080.'));
+mongoose
+	.connect('mongodb://db:27017/meziFlix_db')
+	.then(() => {
+		console.log('connection to Database is succesful');
+		app.listen(8080, () =>
+			console.log('Your app is listening on port 8080.')
+		);
+	})
+	.catch((error) => {
+		console.log(error);
+	});

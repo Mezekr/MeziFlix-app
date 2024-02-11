@@ -3,13 +3,14 @@ version: '3.8'
 services:
     backend:
         depends_on:
-            - mongodb
+            - db
         build:
             context: .
+            dockerfile: Dockerfile
         ports:
             - 8080:8080
         environment:
-            DB_URL: mongodb://data/moviesdb
+            DB_URL: mongodb://db/meziFlix_db
         develop:
             watch:
                 - path: package.json
@@ -20,13 +21,12 @@ services:
                   target: /app
                   action: sync
 
-    mongodb:
+    db:
         image: mongo
         restart: unless-stopped
         ports:
             - 27017:27017
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: root
         volumes:
-            - ../moviesdb:/data/db
+            - meziFlix_db:/data/db
+volumes:
+    meziFlix_db:
