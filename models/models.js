@@ -17,12 +17,14 @@ const movieSchema = mongoose.Schema(
 		Director: {
 			Name: String,
 			Bio: String,
-			BirthYear: Date,
-			DeathYear: Date,
+			Birth: Date,
+			Death: Date,
 		},
 		Actors: [String],
 		ImagePath: String,
 		Featured: Boolean,
+		ReleaseYear: String,
+		Rating: Number,
 	},
 	{
 		timestamps: true,
