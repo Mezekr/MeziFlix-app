@@ -229,7 +229,16 @@ app.get('/movies/directors/:directorName', (req, res) => {
 });
 
 // Return all  users
-app.get('/users', (req, res) => res.json(users));
+app.get('/users', async (req, res) => {
+	await Users.find({})
+		.then((users) => {
+			res.status(201).json(users);
+		})
+		.catch((error) => {
+			console.error('Error' + error);
+			res.status(500).send('Error' + error);
+		});
+});
 
 // Return user by ID
 app.get('/users/:id', (req, res) => {
