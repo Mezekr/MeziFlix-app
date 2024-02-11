@@ -239,15 +239,29 @@ app.get('/users', async (req, res) => {
 			res.status(500).send('Error' + error);
 		});
 });
+// Return user by Username
+app.get('/users/:Username', async (req, res) => {
+	await Users.findOne({ Username: req.pa.Username })
+		.then((user) => {
+			res.status(200).json(user);
+		})
+		.catch((error) => {
+			console.error(error);
+			res.status(500).send('Error' + error);
+		});
+});
 
 // Return user by ID
-app.get('/users/:id', (req, res) => {
-	const user = users.find((user) => user.id == req.params.id);
-	if (user) {
-		// updatedUser.username = req.params.newUserName;
-		res.status(200).json(user);
-	} else res.status(404).send(`Sorry! User with ID ${id} not found`);
-});
+// app.get('/users/:id', async (req, res) => {
+// 	await Users.findOne({ Username: req.pa.id })
+// 		.then((user) => {
+// 			res.status(200).json(user);
+// 		})
+// 		.catch((error) => {
+// 			console.error(error);
+// 			res.status(500).send('Error' + error);
+// 		});
+// });
 
 // Register a new user
 app.post('/users', async (req, res) => {
