@@ -240,16 +240,6 @@ app.get('/users/:id', (req, res) => {
 	} else res.status(404).send(`Sorry! User with ID ${id} not found`);
 });
 
-// Register a new user
-app.post('/users', (req, res) => {
-	const newUser = req.body;
-	if (newUser) {
-		newUser.id = uuid.v4();
-		users.push(newUser);
-		res.status(201).json(newUser);
-	} else res.status(400).send('Sorry! New user registration failed');
-});
-
 // update User's data
 app.put('/users/:id', (req, res) => {
 	const updatedUser = users.find((user) => user.id == req.params.id);
@@ -305,4 +295,14 @@ app.use((err, req, res, next) => {
 	res.status(500).send('Something has gone wrong!');
 });
 
-app.listen(8080, () => console.log('Your app is listening on port 8080.'));
+mongoose
+	.connect('mongodb://db:27017/meziFlix_db')
+	.then(() => {
+		console.log('connection to Database is succesful');
+		app.listen(8080, () =>
+			console.log('Your app is listening on port 8080.')
+		);
+	})
+	.catch((error) => {
+		console.log(error);
+	});
