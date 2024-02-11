@@ -241,7 +241,7 @@ app.get('/users', async (req, res) => {
 });
 // Return user by Username
 app.get('/users/:Username', async (req, res) => {
-	await Users.findOne({ Username: req.pa.Username })
+	await Users.findOne({ Username: req.params.Username })
 		.then((user) => {
 			res.status(200).json(user);
 		})
@@ -330,6 +330,24 @@ app.put('/users/favorites/:id', (req, res) => {
 		// res.status(200).send(`${favMovie} added to your Favourite Movies list`);
 	} else
 		res.status(404).send(`Sorry! Movie with title ${favMovie} not found`);
+});
+
+// User add movie to favorites
+app.put('/users/:Username/movies/:MovieID', async (req, res) => {
+	await Users.findOneAndUpdate(
+		{ Username: req.params.Username },
+		{
+			$push: { FavouriteMovies: req.params.MovieID },
+		},
+		{ new: true }
+	)
+		.then((updatedUser) => {
+			res.status(200).json(updatedUser);
+		})
+		.catch((error) => {
+			console.error(err);
+			res.status(500).send('Error: ' + error);
+		});
 });
 
 // User remove movie from favourites
