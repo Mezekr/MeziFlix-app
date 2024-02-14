@@ -9,7 +9,7 @@ const JWSTOKEN = process.env.JWSTOKEN;
 
 // Generate a Jwt Token
 let generateJWTToken = (user) => {
-	jsonwebtoken.sign(user, JWSTOKEN, {
+	jsonwebtoken.sign(user, 'your_jwt_secret', {
 		subject: user.Username,
 		expiresIn: '3d',
 		algorithm: 'HS256',
@@ -39,6 +39,6 @@ module.exports = (router) => {
 					})
 				);
 			}
-		);
+		)(req, res);
 	});
 };

@@ -4,10 +4,16 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const Models = require('./models/models.js');
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Authorization module
+const auth = require('./auth.js')(app);
+const passport = require('passport');
+require('./passport');
 
 // Mongoose models
 const Movies = Models.Movie;
@@ -30,16 +36,20 @@ app.use(express.static('public'));
 app.get('/', (req, res) => res.send('Welcome to MeziFlix Movies app.'));
 
 // Return all the movies
-app.get('/movies', async (req, res) => {
-	await Movies.find({})
-		.then((movies) => {
-			res.status(200).json(movies);
-		})
-		.catch((error) => {
-			console.error('Error' + error);
-			res.status(500).send('Error' + error);
-		});
-});
+app.get(
+	'/movies',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		await Movies.find({})
+			.then((movies) => {
+				res.status(200).json(movies);
+			})
+			.catch((error) => {
+				console.error('Error' + error);
+				res.status(500).send('Error' + error);
+			});
+	}
+);
 
 // Return a movie by title
 app.get('/movies/:title', async (req, res) => {
