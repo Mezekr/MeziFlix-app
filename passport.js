@@ -37,3 +37,17 @@ passport.use(
 		}
 	)
 );
+
+passport.use(
+	new JWTStrategy(
+		{
+			jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+			secretOrKey: 'user jwt secret tokon key',
+		},
+		async (jwtPayload, callback) => {
+			return await Users.findByID(jwtPayload._id)
+				.then((user) => callback(null, user))
+				.catch((err) => callback(err));
+		}
+	)
+);
