@@ -33,7 +33,7 @@ app.get('/', (req, res) => res.send('Welcome to MeziFlix Movies app.'));
 app.get('/movies', async (req, res) => {
 	await Movies.find({})
 		.then((movies) => {
-			res.status(201).json(movies);
+			res.status(200).json(movies);
 		})
 		.catch((error) => {
 			console.error('Error' + error);
@@ -45,7 +45,7 @@ app.get('/movies', async (req, res) => {
 app.get('/movies/:title', async (req, res) => {
 	await Movies.findOne({ Title: req.params.title })
 		.then((movie) => {
-			res.status(201).json(movie);
+			res.status(200).json(movie);
 		})
 		.catch((error) => {
 			console.error('Error' + error);
@@ -57,7 +57,7 @@ app.get('/movies/:title', async (req, res) => {
 app.get('/movies/genres/:title', async (req, res) => {
 	await Movies.findOne({ Title: req.params.title })
 		.then((movie) => {
-			res.status(201).json(movie.Genre);
+			res.status(200).json(movie.Genre);
 		})
 		.catch((error) => {
 			console.error('Error' + error);
@@ -69,7 +69,7 @@ app.get('/movies/genres/:title', async (req, res) => {
 app.get('/movies/directors/:directorName', async (req, res) => {
 	await Movies.findOne({ 'Director.Name': req.params.directorName })
 		.then((movie) => {
-			res.status(201).json(movie.Director);
+			res.status(200).json(movie.Director);
 		})
 		.catch((error) => {
 			console.error('Error' + error);
@@ -81,7 +81,7 @@ app.get('/movies/directors/:directorName', async (req, res) => {
 app.get('/users', async (req, res) => {
 	await Users.find({})
 		.then((users) => {
-			res.status(201).json(users);
+			res.status(200).json(users);
 		})
 		.catch((error) => {
 			console.error('Error' + error);
@@ -106,7 +106,7 @@ app.post('/users', async (req, res) => {
 		.then((user) => {
 			if (user) {
 				return res
-					.status(400)
+					.status(409)
 					.send(`Username ${req.body.Username} already exist`);
 			} else {
 				Users.create(req.body)
@@ -152,7 +152,7 @@ app.put('/users/favorites/:id', (req, res) => {
 	const user = users.find((user) => user.id == req.params.id);
 	if (user) {
 		user.favouriteMovies.push(req.body.title);
-		res.status(200).json(user);
+		res.status(201).json(user);
 	} else
 		res.status(404).send(`Sorry! Movie with title ${favMovie} not found`);
 });
@@ -167,7 +167,7 @@ app.put('/users/:Username/movies/:MovieID', async (req, res) => {
 		{ new: true }
 	)
 		.then((updatedUser) => {
-			res.status(200).json(updatedUser);
+			res.status(201).json(updatedUser);
 		})
 		.catch((error) => {
 			console.error(err);
@@ -175,7 +175,7 @@ app.put('/users/:Username/movies/:MovieID', async (req, res) => {
 		});
 });
 
-// User delet movie from favorites
+// User delete movie from favorites by Movie ID
 app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
 	await Users.findOne({ Username: req.params.Username })
 		.then(async (user) => {
@@ -183,7 +183,9 @@ app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
 				return movie == req.params.MovieID;
 			});
 			if (!favMovie) {
-				res.status(400).send(`${favMovie} not found`);
+				res.status(404).send(
+					`A Movie with ID ${req.params.MovieID} not found`
+				);
 			} else {
 				await Users.findOneAndUpdate(
 					{ Username: req.params.Username },
@@ -229,7 +231,7 @@ app.delete('/users/:Username', async (req, res) => {
 				return res
 					.status(400)
 					.send(`Username ${req.body.Username} not found`);
-			} else res.status(201).json(user);
+			} else res.status(200).json(user);
 		})
 		.catch((error) => {
 			console.error(error);
@@ -243,6 +245,7 @@ app.use((err, req, res, next) => {
 	res.status(500).send('Something has gone wrong!');
 });
 
+// Database connection
 mongoose
 	.connect('mongodb://db:27017/meziFlix_db')
 	.then(() => {
