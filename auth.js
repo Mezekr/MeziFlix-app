@@ -1,9 +1,11 @@
+require('dotenv').config();
+
 const passport = require('passport');
 const jsonwebtoken = require('jsonwebtoken');
 const localpassport = require('./passport');
 
 // This has to be the same key used in the JWTStrategy
-const JWSTOKEN = 'your_token_key';
+const JWSTOKEN = process.env.JWSTOKEN;
 
 // Generate a Jwt Token
 let generateJWTToken = (user) => {

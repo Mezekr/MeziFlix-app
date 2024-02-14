@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');
@@ -6,6 +8,8 @@ const models = require('./models/models');
 const Users = models.User;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
+
+const JWSTOKEN = process.env.JWSTOKEN;
 
 // Local HTTP-Authentication Passport middleware strategy
 passport.use(
@@ -38,11 +42,12 @@ passport.use(
 	)
 );
 
+// JWt Passport middleware strategy
 passport.use(
 	new JWTStrategy(
 		{
 			jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-			secretOrKey: 'user jwt secret tokon key',
+			secretOrKey: JWSTOKEN,
 		},
 		async (jwtPayload, callback) => {
 			return await Users.findByID(jwtPayload._id)
