@@ -2,14 +2,15 @@ require('dotenv').config();
 
 const passport = require('passport');
 const jsonwebtoken = require('jsonwebtoken');
-const localpassport = require('./passport');
+require('./passport');
 
 // This has to be the same key used in the JWTStrategy
-const JWSTOKEN = process.env.JWSTOKEN;
+// const JWSTOKEN = process.env.JWSTOKEN;
+const JWSTOKEN = 'your_jwt_secret';
 
 // Generate a Jwt Token
 let generateJWTToken = (user) => {
-	jsonwebtoken.sign(user, 'your_jwt_secret', {
+	return jsonwebtoken.sign(user, JWSTOKEN, {
 		subject: user.Username,
 		expiresIn: '3d',
 		algorithm: 'HS256',
@@ -29,15 +30,15 @@ module.exports = (router) => {
 						user: user,
 					});
 				}
-				req.login(
-					(user,
-					{ session: false },
-					(error) => {
-						if (error) res.send(error);
-						let token = generateJWTToken(user.toJSON());
-						return res.json(user, token);
-					})
-				);
+				req.login(user, { session: false }, (error) => {
+					if (error) res.send(error);
+
+					// let token = generateJWTToken(user.toJSON());
+					return res.json({
+						user,
+						token: generateJWTToken(user.toJSON()),
+					});
+				});
 			}
 		)(req, res);
 	});
