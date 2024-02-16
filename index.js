@@ -135,27 +135,34 @@ app.post('/users', async (req, res) => {
 		});
 });
 
-app.put('/users/:Username', async (req, res) => {
-	await Users.findOneAndUpdate(
-		{ Username: req.params.Username },
-		{
-			$set: {
-				Username: req.body.Username,
-				Password: req.body.Password,
-				Email: req.body.Email,
-				Birthday: req.body.Birthday,
+app.put(
+	'/users/:Username',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		if (req.user.Username !== req.params.Username) {
+			return res.status(400).json('Permission denied');
+		}
+		await Users.findOneAndUpdate(
+			{ Username: req.params.Username },
+			{
+				$set: {
+					Username: req.body.Username,
+					Password: req.body.Password,
+					Email: req.body.Email,
+					Birthday: req.body.Birthday,
+				},
 			},
-		},
-		{ new: true }
-	)
-		.then((updatedUser) => {
-			res.status(201).json(updatedUser);
-		})
-		.catch((error) => {
-			console.error(error);
-			res.status(500).send('Error' + error);
-		});
-});
+			{ new: true }
+		)
+			.then((updatedUser) => {
+				res.status(201).json(updatedUser);
+			})
+			.catch((error) => {
+				console.error(error);
+				res.status(500).send('Error' + error);
+			});
+	}
+);
 
 // User add movie to favorites
 app.put('/users/favorites/:id', (req, res) => {
