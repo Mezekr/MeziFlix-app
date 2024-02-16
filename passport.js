@@ -9,7 +9,8 @@ const Users = models.User;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-const JWSTOKEN = process.env.JWSTOKEN;
+// const JWSTOKEN = process.env.JWSTOKEN;
+const JWSTOKEN = 'your_jwt_secret';
 
 // Local HTTP-Authentication Passport middleware strategy
 passport.use(
@@ -47,10 +48,10 @@ passport.use(
 	new JWTStrategy(
 		{
 			jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-			secretOrKey: 'your_jwt_secret', //process.env.JWSTOKEN,
+			secretOrKey: JWSTOKEN,
 		},
 		async (jwtPayload, callback) => {
-			return await Users.findByID(jwtPayload._id)
+			return await Users.findById(jwtPayload._id)
 				.then((user) => callback(null, user))
 				.catch((err) => callback(err));
 		}
