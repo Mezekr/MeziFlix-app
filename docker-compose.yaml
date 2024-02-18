@@ -11,6 +11,8 @@ services:
             - 8080:8080
         environment:
             DB_URL: mongodb://db/meziFlix_db
+        env_file:
+            - .env
         develop:
             watch:
                 - path: package.json
