@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 const Models = require('./models/models.js');
 require('dotenv').config();
 
+const MONGODB_URL = process.env.MONGODB_URL;
+const PORT = process.env.PORT || 8080;
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -133,7 +136,7 @@ app.get(
 // Register a new user
 app.post(
 	'/users',
-	passport.authenticate('jwt', { session: false }),
+	// passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
 		await Users.findOne({ Username: req.body.Username })
 			.then((user) => {
@@ -300,11 +303,11 @@ app.use((err, req, res, next) => {
 
 // Database connection
 mongoose
-	.connect('mongodb://db:27017/meziFlix_db')
+	.connect(MONGODB_URL)
 	.then(() => {
 		console.log('connection to Database is succesful');
-		app.listen(8080, () =>
-			console.log('Your app is listening on port 8080.')
+		app.listen(PORT, () =>
+			console.log(`Your app is listening on port ${PORT}.`)
 		);
 	})
 	.catch((error) => {

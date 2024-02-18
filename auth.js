@@ -5,8 +5,7 @@ const jsonwebtoken = require('jsonwebtoken');
 require('./passport');
 
 // This has to be the same key used in the JWTStrategy
-// const JWSTOKEN = process.env.JWSTOKEN;
-const JWSTOKEN = 'your_jwt_secret';
+const JWSTOKEN = process.env.JWSTOKEN;
 
 // Generate a Jwt Token
 let generateJWTToken = (user) => {

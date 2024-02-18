@@ -9,8 +9,7 @@ const Users = models.User;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-// const JWSTOKEN = process.env.JWSTOKEN;
-const JWSTOKEN = 'your_jwt_secret';
+const JWSTOKEN = process.env.JWSTOKEN;
 
 // Local HTTP-Authentication Passport middleware strategy
 passport.use(
