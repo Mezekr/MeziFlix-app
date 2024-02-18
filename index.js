@@ -1,10 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
+const cors = require('cors');
+
 const Models = require('./models/models.js');
-require('dotenv').config();
 
 const MONGODB_URL = process.env.MONGODB_URL;
 const PORT = process.env.PORT || 8080;
@@ -12,6 +14,21 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+app.use(
+	cors({
+		origin: (origin, callback) => {
+			if (!origin) return callback(null, true);
+			if (allowedOrigins.indexOf(origin) === -1) {
+				let message = `The CORS policy for this application \
+				 				doesn’t allow access from origin ${origin}`;
+				return callback(new Error(message), false);
+			}
+			return callback(null, true);
+		},
+	})
+);
 
 // Authorization module
 const auth = require('./auth.js')(app);
