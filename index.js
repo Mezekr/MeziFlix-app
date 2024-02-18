@@ -155,6 +155,7 @@ app.post(
 	'/users',
 	// passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
+		// const hashedPassword = Users.hashPassword(req.body.Password);
 		await Users.findOne({ Username: req.body.Username })
 			.then((user) => {
 				if (user) {

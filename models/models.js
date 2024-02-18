@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const movieSchema = mongoose.Schema(
 	{
@@ -59,6 +60,22 @@ const userSchema = mongoose.Schema(
 		timestamps: true,
 	}
 );
+
+//Password Hashing
+// userSchema.statics.hashPassword = (password) => {
+// 	return bcrypt.hashSync(password, 10);
+// };
+
+userSchema.pre('save', async function (next) {
+	if (!this.isModified('Password')) return next();
+	//hash the password
+	this.Password = await bcrypt.hash(this.Password, 8);
+	next();
+});
+
+userSchema.methods.validatePassword = async function (password) {
+	return await bcrypt.compare(password, this.password);
+};
 
 const Movie = mongoose.model('Movie', movieSchema);
 const User = mongoose.model('User', userSchema);

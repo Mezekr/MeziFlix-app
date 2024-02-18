@@ -9,7 +9,8 @@ const Users = models.User;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-const JWSTOKEN = process.env.JWSTOKEN;
+// const JWSTOKEN = process.env.JWSTOKEN;
+const JWSTOKEN = 'your_jwt_secret';
 
 // Local HTTP-Authentication Passport middleware strategy
 passport.use(
@@ -27,6 +28,12 @@ passport.use(
 						console.log('The username or password is incorrect.');
 						return callback(null, false, {
 							message: 'The username or password is incorrect.',
+						});
+					}
+					if (!user.validatePassword(password)) {
+						console.log('Incorrect password');
+						return callback(null, false, {
+							message: 'Incorrect password.',
 						});
 					}
 					console.log('Ready');
