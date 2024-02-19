@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { check, validationResult } = require('express-validator');
 
 const Models = require('./models/models.js');
 
@@ -153,9 +154,20 @@ app.get(
 // Register a new user
 app.post(
 	'/users',
-	// passport.authenticate('jwt', { session: false }),
+	[
+		check('Username', 'Username is required').isLength({ min: 5 }),
+		check(
+			'Username',
+			'Username contains non alphanumeric characters - not allowed.'
+		).isAlphanumeric(),
+		check('Password', 'Password is required').not().isEmpty(),
+		check('Email', 'Email does not appear to be valid').isEmail(),
+	],
 	async (req, res) => {
-		// const hashedPassword = Users.hashPassword(req.body.Password);
+		let errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(422).json({ error: errors.array() });
+		}
 		await Users.findOne({ Username: req.body.Username })
 			.then((user) => {
 				if (user) {
@@ -182,10 +194,24 @@ app.post(
 
 app.put(
 	'/users/:Username',
+	[
+		check('Username', 'Username is required').isLength({ min: 5 }),
+		check(
+			'Username',
+			'Username contains non alphanumeric characters - not allowed.'
+		).isAlphanumeric(),
+		check('Password', 'Password is required').not().isEmpty(),
+		check('Email', 'Email does not appear to be valid').isEmail(),
+		check('Birthday', 'Birthday must be a date format').isDate(),
+	],
 	passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
 		if (req.user.Username !== req.params.Username) {
 			return res.status(400).json('Permission denied');
+		}
+		let errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(422).json({ error: errors.array() });
 		}
 		await Users.findOneAndUpdate(
 			{ Username: req.params.Username },
@@ -210,20 +236,29 @@ app.put(
 );
 
 // User add movie to favorites
-app.put('/users/favorites/:id', (req, res) => {
-	const user = users.find((user) => user.id == req.params.id);
-	if (user) {
-		user.favouriteMovies.push(req.body.title);
-		res.status(201).json(user);
-	} else
-		res.status(404).send(`Sorry! Movie with title ${favMovie} not found`);
-});
-
-// User add movie to favorites
 app.put(
 	'/users/:Username/movies/:MovieID',
 	passport.authenticate('jwt', { session: false }),
+	[
+		check('Username', 'Username is required').isLength({ min: 5 }),
+		check(
+			'Username',
+			'Username contains non alphanumeric characters - not allowed.'
+		).isAlphanumeric(),
+		check(
+			'MovieID',
+			'MovieID is required and contains non alphanumeric characters - \
+			 not allowed '
+		)
+			.not()
+			.isEmpty()
+			.isAlphanumeric(),
+	],
 	async (req, res) => {
+		let errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(422).json({ error: errors.array() });
+		}
 		await Users.findOneAndUpdate(
 			{ Username: req.params.Username },
 			{
@@ -245,7 +280,26 @@ app.put(
 app.delete(
 	'/users/:Username/movies/:MovieID',
 	passport.authenticate('jwt', { session: false }),
+	[
+		check('Username', 'Username is required').isLength({ min: 5 }),
+		check(
+			'Username',
+			'Username contains non alphanumeric characters - not allowed.'
+		).isAlphanumeric(),
+		check(
+			'MovieID',
+			'MovieID is required and contains non alphanumeric characters \
+			- not allowed'
+		)
+			.not()
+			.isEmpty()
+			.isAlphanumeric(),
+	],
 	async (req, res) => {
+		let errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(422).json({ error: errors.array() });
+		}
 		await Users.findOne({ Username: req.params.Username })
 			.then(async (user) => {
 				const favMovie = user.FavouriteMovies.find((movie) => {
@@ -279,25 +333,21 @@ app.delete(
 	}
 );
 
-// User remove movie from favourites
-app.delete('/users/favorites/:id/:favTitle', (req, res) => {
-	const { id, favTitle } = req.params;
-	const user = users.find((user) => user.id == id);
-	if (user && favTitle) {
-		user.favouriteMovies = user.favouriteMovies.filter(
-			(favTitle) => favTitle !== title
-		);
-		res.status(200).send(
-			`${favTitle} removed from your Favourite Movies list`
-		);
-	} else
-		res.status(404).send(`Sorry! Movie with title ${favTitle} not found`);
-});
-
 app.delete(
 	'/users/:Username',
 	passport.authenticate('jwt', { session: false }),
+	[
+		check('Username', 'Username is required').isLength({ min: 5 }),
+		check(
+			'Username',
+			'Username contains non alphanumeric characters - not allowed.'
+		).isAlphanumeric(),
+	],
 	async (req, res) => {
+		let errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(422).json({ error: errors.array() });
+		}
 		await Users.findOneAndDelete({ Username: req.params.Username })
 			.then((user) => {
 				if (!user) {
