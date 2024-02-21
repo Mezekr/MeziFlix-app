@@ -374,7 +374,7 @@ mongoose.set('strictQuery', false);
 mongoose
 	.connect(MONGODB_URL)
 	.then(() => {
-		console.log('connection to Database from server is succesful');
+		console.log('Connection to Database is succesful.');
 		app.listen(PORT, () =>
 			console.log(`Your app is listening on port ${PORT}.`)
 		);
