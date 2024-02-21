@@ -370,6 +370,7 @@ app.use((err, req, res, next) => {
 });
 
 // Database connection
+mongoose.set('strictQuery', false);
 mongoose
 	.connect(MONGODB_URL)
 	.then(() => {
