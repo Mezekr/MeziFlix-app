@@ -16,7 +16,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 const allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://meziflix.netlify.app/login'];
+
 app.use(
 	cors({
 		origin: (origin, callback) => {
@@ -374,7 +376,7 @@ mongoose.set('strictQuery', false);
 mongoose
 	.connect(MONGODB_URL)
 	.then(() => {
-		console.log('connection to Database from server is succesful');
+		console.log('Connection to Database is succesful.');
 		app.listen(PORT, () =>
 			console.log(`Your app is listening on port ${PORT}.`)
 		);
