@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-const allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://meziflix.netlify.app/login'];
+const allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://meziflix.netlify.app'];
 
 app.use(
 	cors({
