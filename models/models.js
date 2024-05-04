@@ -61,11 +61,6 @@ const userSchema = mongoose.Schema(
 	}
 );
 
-//Password Hashing
-// userSchema.statics.hashPassword = (password) => {
-// 	return bcrypt.hashSync(password, 10);
-// };
-
 userSchema.pre('save', async function (next) {
 	if (!this.isModified('Password')) return next();
 	//hash the password
