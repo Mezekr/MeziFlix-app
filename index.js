@@ -16,9 +16,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Origins allowed to access the API according to CORS data access policy
+const allowedOrigins = [
+	'http://localhost:8080',
+	'http://testsite.com',
+	'https://meziflix.netlify.app',
+	'http://localhost:5173',
+	'http://localhost:4200',
+	'https://mezekr.github.io',
+];
 
-const allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://meziflix.netlify.app', 'http://localhost:5173', 'http://localhost:4200', 'https://mezekr.github.io'];
-
+// Middleware to handle CORS allowed Origins requests
 app.use(
 	cors({
 		origin: (origin, callback) => {
@@ -54,11 +62,25 @@ app.use(morgan('common'));
 
 app.use(express.static('public'));
 
-// app.use(bodyParser.json());
-
+/**
+ * GET index page
+ * @function
+ * @name getIndexPage
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} -  A string response.
+ */
 app.get('/', (req, res) => res.send('Welcome to MeziFlix Movies app.'));
 
-// Return all the movies
+/**
+ * GET all movies as a list
+ * @function
+ * @name getAllMovies
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @throws {Error} - If there is an error while retrieving movies from the database.
+ * @returns {Object} - Returns JSON response containing all movies.
+ */
 app.get(
 	'/movies',
 	passport.authenticate('jwt', { session: false }),
@@ -74,7 +96,16 @@ app.get(
 	}
 );
 
-// Return a movie by title
+/**
+ * GET movie by name
+ * @function
+ * @name getOneMovie
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {string} req.params.title - The title of the movie to retrieve.
+ * @throws {Error} - If there is an error while retrieving the movie from the database.
+ * @returns {Object} - Returns JSON response containing the requested movie.
+ */
 app.get(
 	'/movies/:title',
 	passport.authenticate('jwt', { session: false }),
@@ -90,7 +121,16 @@ app.get(
 	}
 );
 
-// Return a genre of a movie by title
+/**
+ * GET the genre of a movie by the title of the movie
+ * @function
+ * @name getGenre
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {string} req.params.title - Movie title to retrieve its genre from the database.
+ * @throws {Error} - If there is an error while retrieving genre from the database.
+ * @returns {Object} - Returns JSON response containing the genre object of the requested movies.
+ */
 app.get(
 	'/movies/genres/:title',
 	passport.authenticate('jwt', { session: false }),
@@ -106,7 +146,16 @@ app.get(
 	}
 );
 
-// Return a Director of a movie
+/**
+ * GET the director of a movie by the title of the movie
+ * @function
+ * @name getDirector
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {string} req.params.directorName - The name of the director to retrieve from the database.
+ * @throws {Error} - If there is an error while retrieving director from the database.
+ * @returns {Object} - Returns JSON response containing the director object of the requested movies.
+ */
 app.get(
 	'/movies/directors/:directorName',
 	passport.authenticate('jwt', { session: false }),
@@ -122,7 +171,15 @@ app.get(
 	}
 );
 
-// Return all  users
+/**
+ * GETS all users
+ * @function
+ * @name getAllUsers
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @throws {Error} - 	On error to retrieve users from the database.
+ * @returns {Object} - Returns JSON response containing the all users.
+ */
 app.get(
 	'/users',
 	passport.authenticate('jwt', { session: false }),
@@ -137,7 +194,17 @@ app.get(
 			});
 	}
 );
-// Return user by Username
+
+/**
+ * GET a user by username
+ * @function
+ * @name getOneUser
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {string} req.params.Username - The username of the user to retrieve.
+ * @throws {Error} - 	On error retrieving the user from the database.
+ * @returns {Object} - Returns JSON response containing the user with this username.
+ */
 app.get(
 	'/users/:Username',
 	passport.authenticate('jwt', { session: false }),
@@ -153,7 +220,15 @@ app.get(
 	}
 );
 
-// Register a new user
+/**
+ * CREATE new user
+ * @function
+ * @name signupUser
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @throws {Error} - 	If an error occurs while creating the new user.
+ * @returns {Object} - Returns JSON response containing the new user.
+ */
 app.post(
 	'/users',
 	[
@@ -194,6 +269,17 @@ app.post(
 	}
 );
 
+/**
+ * UPDATE User Information by User Name
+ * @function
+ * @name updateUser
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {string} req.params.Username - The username of the user to update.
+ * @throws {Error} - If there is an error during input validation or
+ * 						update of user data in the database.
+ * @returns {Object} - JSON response containing the updated user.
+ *  */
 app.put(
 	'/users/:Username',
 	[
@@ -202,7 +288,7 @@ app.put(
 			'Username',
 			'Username contains non alphanumeric characters - not allowed.'
 		).isAlphanumeric(),
-		check('Password', 'Password is required').not().isEmpty(),
+		// check('Password', 'Password is required').not().isEmpty(),
 		check('Email', 'Email does not appear to be valid').isEmail(),
 		check('Birthday', 'Birthday must be a date format').isDate(),
 	],
@@ -220,7 +306,7 @@ app.put(
 			{
 				$set: {
 					Username: req.body.Username,
-					Password: req.body.Password,
+					// Password: req.body.Password,
 					Email: req.body.Email,
 					Birthday: req.body.Birthday,
 				},
@@ -237,7 +323,18 @@ app.put(
 	}
 );
 
-// User add movie to favorites
+/**
+ * CREATE new favorite movie for user
+ * @function
+ * @name addFavMovie
+ * @param {Object} req - Express request object.
+ * @param {Object} req.user - User object obtained from JWT authentication.
+ * @param {string} req.params.Username - The username of the user.
+ * @param {string} req.params.MovieID - The ID of the movie to add to the user's favorites.
+ * @param {Object} res - Express response object.
+ * @throws {Error} - On error while updating user data in the database.
+ * @returns {Object} - Returns JSON response containing the updated user's information.
+ */
 app.put(
 	'/users/:Username/movies/:MovieID',
 	passport.authenticate('jwt', { session: false }),
@@ -278,7 +375,18 @@ app.put(
 	}
 );
 
-// User delete movie from favorites by Movie ID
+/**
+ * DELETE favorite movie for user
+ * @function
+ * @name deleteFavMovie
+ * @param {Object} req - Express request object.
+ * @param {Object} req.user - User object obtained from JWT authentication.
+ * @param {string} req.params.Username - The username of the user.
+ * @param {string} req.params.MovieID - The ID of the movie to remove from the user's favorites.
+ * @param {Object} res - Express response object.
+ * @throws {Error} - On error while updating user data in the database.
+ * @returns {Object} - Returns JSON response containing the updated user's information.
+ */
 app.delete(
 	'/users/:Username/movies/:MovieID',
 	passport.authenticate('jwt', { session: false }),
@@ -335,6 +443,17 @@ app.delete(
 	}
 );
 
+/**
+ * DELETE a user by Username
+ * @function
+ * @name deleteUser
+ * @param {Object} req - Express request object.
+ * @param {Object} req.user - User object obtained from JWT authentication.
+ * @param {string} req.params.Username - The username of the user to delete.
+ * @param {Object} res - Express response object.
+ * @throws {Error} -  On error while deleting the user from the database.
+ * @returns {Object} - Returns message indicating whether the user was successfully deleted or not.
+ */
 app.delete(
 	'/users/:Username',
 	passport.authenticate('jwt', { session: false }),
@@ -365,10 +484,10 @@ app.delete(
 	}
 );
 
-// error handling
+// error handling on server
 app.use((err, req, res, next) => {
 	console.error(err.stack);
-	res.status(500).send('Something has gone wrong!');
+	res.status(500).send('Error on the server. Please try again');
 });
 
 // Database connection
